@@ -1,0 +1,33 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Log in</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="loginForm" (ngSubmit)="submitLogin()" novalidate>
+
+    <ion-item lines="full">
+      <ion-label position="floating">Password</ion-label>
+      <ion-input formControlName="password" type="text"></ion-input>
+    </ion-item>
+    <span class="error ion-padding" *ngIf="submitted && formControls.password.errors?.required">
+      Password is required.
+    </span>
+    <span class="error ion-padding" *ngIf="submitted && formControls.password.errors?.minlength">
+      Min 6 chars long.
+    </span>
+
+    <ion-row>
+      <ion-col>
+        <ion-button (click)="submitLogin()" type="submit" color="danger" expand="block">Submit</ion-button>
+      </ion-col>
+    </ion-row>
+  </form>
+
+  <div><span class="divider line one-line">or</span></div>
+  <p class="center">If you don't have an account, sign up. :</p>
+  <ion-button [routerLink]="['/get-license']" color="secondary">Register</ion-button>
+  
+</ion-content>
+

@@ -1,0 +1,7 @@
+{
+  "name": "CyberClient",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

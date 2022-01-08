@@ -1,0 +1,44 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-button color = "light" class = "button" [routerLink]="['/log-in']">
+      <ion-icon name="chevron-back-outline"></ion-icon>
+    </ion-button>
+    <ion-title>Create password</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="registerForm" (ngSubmit)="submitRegister()" novalidate>
+
+    <ion-item lines="full">
+      <ion-label position="floating">New Password (min 6 chars)</ion-label>
+      <ion-input formControlName="password" type="password" required></ion-input>
+    </ion-item>
+    <span class="error ion-padding" *ngIf="submitted && formControls.password.errors?.required">
+      Password is required.
+    </span>
+    <span class="error ion-padding" *ngIf="submitted && formControls.password.errors?.minlength">
+      Min 6 chars long.
+    </span>
+
+    <ion-item lines="full">
+      <ion-label position="floating">Confirm password </ion-label>
+      <ion-input formControlName="confirmPassword" type="password" required></ion-input>
+    </ion-item>
+    <span class="error ion-padding" *ngIf="registerForm.get('confirmPassword').errors?.MatchPassword" style="color: #C0392B">
+      New password and Confirm password did not match
+    </span>
+    <span class="error ion-padding" *ngIf="submitted && formControls.password.errors?.required">
+      Password is required.
+    </span>
+    <span class="error ion-padding" *ngIf="submitted && formControls.password.errors?.minlength">
+      Min 6 chars long.
+    </span>
+
+    <ion-row>
+      <ion-col>
+        <ion-button type="submit" expand="block">Sign Up</ion-button>
+      </ion-col>
+    </ion-row>
+  </form>
+</ion-content>

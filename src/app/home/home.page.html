@@ -1,0 +1,73 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      Ciber Security 
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content class="center">
+
+  <form [formGroup]="cipherForm" (ngSubmit)="submitCipher()" novalidate>
+
+    <ion-item lines="full">
+      <ion-label position="floating">Text</ion-label>
+      <ion-input formControlName="text" type="text"></ion-input>
+    </ion-item>
+    <span class="error ion-padding" *ngIf="submitted && formControls.text.errors?.required">
+      Text is required.
+    </span>
+    
+    <ion-item lines="full">
+      <ion-label position="floating">Clave Publica</ion-label>
+      <ion-input formControlName="key" type="text"></ion-input>
+    </ion-item>
+    <span class="error ion-padding" *ngIf="submitted && formControls.key.errors?.required">
+      PublicKey is required.
+    </span>
+
+    <ion-row>
+      <ion-col class="center">
+        <ion-button type="submit" expand="block">Cipher</ion-button>       
+      </ion-col>
+    </ion-row>
+
+  </form>
+
+  <form [formGroup]="signForm" (ngSubmit)="submitSign()" novalidate>
+
+    <ion-item lines="full">
+      <ion-label position="floating">Text</ion-label>
+      <ion-input formControlName="text" type="text"></ion-input>
+    </ion-item>
+    <span class="error ion-padding" *ngIf="submitted && formControls.text.errors?.required">
+      Text is required.
+    </span>
+
+    <ion-row>
+      <ion-col class="center">
+        <ion-button type="submit" expand="block">Sign</ion-button>       
+      </ion-col>
+    </ion-row>
+
+  </form>
+
+  <ion-card *ngFor="let data of response">
+    <ion-card-content >
+      <div >
+        Mensage: {{data.data}}
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+
+  <ion-row>
+    <ion-col class="center">
+      <ion-button type="submit" color="danger" (click)="refresh()" expand="block">Refresh</ion-button>       
+    </ion-col>
+  </ion-row>
+
+
+</ion-content>
+
