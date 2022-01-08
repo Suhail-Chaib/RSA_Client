@@ -25,6 +25,7 @@ export class HomePage {
   data:any;
   x:any;
   response: DataModel[];
+  response2: DataModel[];
   resultados: String[];
   resultado:any;
   n:any;
@@ -45,28 +46,45 @@ export class HomePage {
 
   get formControls() { return this.cipherForm.controls; }
 
+  get formControls2() { return this.signForm.controls; }
+
   ngOnInit() {
 
     let password = localStorage.getItem('password');
 
     this.publicKeyService.getUser(password).subscribe((response) => {
       this.resultado = response;
+
       this.d = bc.base64ToBigint(this.resultado[0].privateKey[0].d)
       this.n = bc.base64ToBigint(this.resultado[0].publicKey[0].n)
       let e = bc.base64ToBigint("AQAB");
-
       const publicKey = new PublicKey(e, this.n);
       const privateKey = new PrivateKey(this.d, publicKey);
+
+
       this.dataEncryptedService.getData(password).subscribe((response) => {
-          
         this.response = response; 
 
         for(let i =0; i<this.response.length;i++){
           const y = privateKey.decrypt(bc.base64ToBigint(this.response[i].data));
           this.response[i].data = bc.bigintToText(y);
         }
-            
+
       });
+
+      this.dataEncryptedService.getData2(password).subscribe((response2) => {
+        this.response2 = response2; 
+
+        
+        for(let i =0; i<this.response2.length;i++){
+          const publicKey2 = new PublicKey(e, bc.base64ToBigint(response2[i].keyA));
+          const y = publicKey2.verify(bc.base64ToBigint(this.response2[i].data));
+          this.response2[i].data = bc.bigintToText(y);
+        }
+
+      });
+
+
 
     });  
      
@@ -75,7 +93,7 @@ export class HomePage {
     });
 
     this.signForm = this.formBuilder.group({
-      text: ['', Validators.required]
+      text2: ['', Validators.required], key2: ['', Validators.required]
   });
   }
 
@@ -91,14 +109,23 @@ export class HomePage {
       return;
     }  
 
-    let text = this.formControls.text.value;
+    let text = this.formControls2.text2.value;
+    let keyB = this.formControls2.key2.value;
+    let keyA = bc.bigintToBase64(this.n);
     let e = bc.base64ToBigint("AQAB");
     const publicKey = new PublicKey(e, this.n);
     const privateKey = new PrivateKey(this.d, publicKey);
     console.log(privateKey);
-    /*const y = privateKey.sign(bc.textToBigint(text));
-    console.log(bc.bigintToText(y));*/
+    console.log(text);
+    const y = privateKey.sign(bc.textToBigint(text));
+    let s = bc.bigintToBase64(y);
+    console.log(s);
 
+    this.dataEncryptedService.postData2(s, keyA, keyB).subscribe((response) => {
+      this.signForm.reset();
+    });
+
+    //texto firmado con la clave privada de A + clave publica de B + clave 
   }
 
 
@@ -121,31 +148,7 @@ export class HomePage {
       this.dataEncryptedService.postData(s, n).subscribe((response) => {
         this.cipherForm.reset();
       });
-      //swIUh/p0MBSH3XOlOpXjQTk2B8JzSRrhrdS+Bwh5jlpwxWORSAEQsoVl/rfHqaO9eQ0zUSLws8XmmZULl8Khiq1gATESrYh6GR2bokPfJYLmpEHPL823kpfkylwgJwfBJccmsx6TumS9dlAnr6ZuHkzkY/ZUpZiiVp8yyA//Vj27kHnEaZNpBxQyXQdnJnfDcoQpzfiWyTA4gir0EkEbKFDQE3lDkD5ugSlgwS4V0RfTO0pooQj9bTXp1ETukGM/zbjrMm0hTkTxjihXENnS4adsSGogC2VWXqYXGw2EthiDlhPO9VITXnen/hPi9ryIrhKrQdGpO2hRJcUbF4ARc1M36eG6v6ov0pufuOXPEVdC1seJ+GOupr9OE0vkyY5o8aKChGtsfgnI4RGNZ8fhQQGVV55Wm4J0veD3x/HhgWq3EuAnP7S6+/2tK1k7Gk9K288qfdyQf8LTMRSbEq2201Pcd1nAIAQKelNSLK3T4W+JQ/FfxGMR7TasXz+SIh5F
-
-
-      /*this.publicKeyService.getPublicKey(this.data).subscribe (data => {
-        this.publicKeys = data;
-
-        let e = bc.base64ToBigint(this.publicKeys[0].e);
-        let n = bc.base64ToBigint(this.publicKeys[0].n);
-
-        const publicKey = new PublicKey(e, n);
-        let text = this.formControls.text.value;
-        console.log(bc.bigintToHex(n));
-        this.x =  publicKey.encrypt(bc.textToBigint(text));
-
-        let dataEncrypted = { "data": bc.bigintToBase64(this.x)};
-
-        
-        let key = {'n': this.publicKeys[0].n, 'e':  this.publicKeys[0].e};
       
-        this.dataEncryptedService.postData(dataEncrypted, key).subscribe((response) => {
-          this.cipherForm.reset();
-        });
-
-      });*/
-
   }
 
 }

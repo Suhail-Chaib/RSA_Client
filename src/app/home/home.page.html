@@ -39,10 +39,18 @@
 
     <ion-item lines="full">
       <ion-label position="floating">Text</ion-label>
-      <ion-input formControlName="text" type="text"></ion-input>
+      <ion-input formControlName="text2" type="text"></ion-input>
     </ion-item>
-    <span class="error ion-padding" *ngIf="submitted && formControls.text.errors?.required">
+    <span class="error ion-padding" *ngIf="submitted && formControls.text2.errors?.required">
       Text is required.
+    </span>
+
+    <ion-item lines="full">
+      <ion-label position="floating">Clave Publica</ion-label>
+      <ion-input formControlName="key2" type="text"></ion-input>
+    </ion-item>
+    <span class="error ion-padding" *ngIf="submitted && formControls.key2.errors?.required">
+      PublicKey is required.
     </span>
 
     <ion-row>
@@ -56,7 +64,7 @@
   <ion-card *ngFor="let data of response">
     <ion-card-content >
       <div >
-        Mensage: {{data.data}}
+        Mensaje: {{data.data}}
       </div>
     </ion-card-content>
   </ion-card>
@@ -68,6 +76,13 @@
     </ion-col>
   </ion-row>
 
+  <ion-card *ngFor="let data of response2">
+    <ion-card-content >
+      <div >
+        Mensaje: {{data.data}}
+      </div>
+    </ion-card-content>
+  </ion-card>
 
 </ion-content>
 
